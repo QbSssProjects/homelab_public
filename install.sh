@@ -11,6 +11,28 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+PROJECT_DIR=$(pwd)
+CURRENT_USER=$(whoami)
+
+echo "Projekt w: $PROJECT_DIR"
+echo "Użytkownik: $CURRENT_USER"
+
+# ---- NAPRAWA UPRAWNIEŃ ----
+echo "Naprawianie uprawnień projektu..."
+
+sudo chown -R $CURRENT_USER:$CURRENT_USER $PROJECT_DIR || true
+chmod -R u+rwX $PROJECT_DIR
+
+# Jeśli istnieje node_modules z rootem → usuń
+if [ -d "node_modules" ]; then
+  echo "Czyszczenie starego node_modules..."
+  rm -rf node_modules
+fi
+
+if [ -d "backend/node_modules" ]; then
+  rm -rf backend/node_modules
+fi
+
 # ---- NVM ----
 if [ ! -d "$HOME/.nvm" ]; then
   echo -e "${YELLOW}Instalowanie NVM...${NC}"
@@ -74,6 +96,9 @@ recharts@3.3.0 \
 tailwindcss@3.4.18 \
 web-vitals@2.1.4
 
+# Nadaj prawa do node_modules (ważne dla ESLint cache)
+chmod -R u+rwX node_modules
+
 # ---- BACKEND ----
 cd backend
 
@@ -90,6 +115,8 @@ express@5.1.0 \
 firebase-admin@13.6.0 \
 multer@2.0.2 \
 serve-index@1.9.1
+
+chmod -R u+rwX node_modules
 
 cd ..
 
